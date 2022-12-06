@@ -1,7 +1,8 @@
-def getMarkerIdx(buffer, numDistinct):
-    return next(i
-                for i in range(numDistinct, len(buffer))
-                if len(set(buffer[i-numDistinct:i])) == numDistinct)
+def isStrDistinct(s):
+    return len(s) == len(set(s))
+
+def getMarkerIdx(buffer, n):
+    return next(i for i in range(n, len(buffer)) if isStrDistinct(buffer[i-n:i]))
 
 stream = open('input.txt', 'r').read()
 
