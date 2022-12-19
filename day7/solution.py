@@ -7,9 +7,7 @@ children = {}
 filesize = {}
 dirsize = {}
 
-for cmd in terminal[1:]:
-    #print(cmd)
-    
+for cmd in terminal[1:]:    
     if curDir not in children:
         children[curDir] = []
 
@@ -22,7 +20,6 @@ for cmd in terminal[1:]:
             curDir = parent[curDir]
         else:
             curDir = curDir + '/' + cdcmd[3:]
-        #print('Change dir to ' + curDir)
         
     else:
         for output in cmd[1:]:
@@ -30,34 +27,22 @@ for cmd in terminal[1:]:
                 childDir = curDir + '/' + output[4:]
                 parent[childDir] = curDir
                 children[curDir].append(childDir)
-                #print(output[4:] + ' child dir of ' + curDir)
                 
             else:
                 s = int(output.split(' ')[0])
                 f = output.split(' ')[1]
                 filesize[f] = s
                 dirsize[curDir] += s
-                #print(f + ' has size ' + str(s))
 
-#print(filesize)
-#print(dirsize)
+def getSize(d, kids, dSize):
+    for c in kids[d]:
+        dSize[d] += getSize(c, kids, dSize)
+    return dSize[d]
 
-for lDir in children:
-    if len(children[lDir]) > 0:
-        continue
-    lSize = dirsize[lDir]
-    while lDir != '':
-        lDir = parent[lDir]
-        dirsize[lDir] += lSize
-        lSize = dirsize[lDir]
-    
+used = getSize('', children, dirsize)
+
 print(sum([dirsize[_] for _ in dirsize if dirsize[_] < 100000]))
 
 ## Part 2
-used = dirsize['']
-print(dirsize)
-##unused = 70000000-used
-##print(unused)
-##mindel = 30000000 - unused
-##print(mindel)
-##print(min([dirsize[_] for _ in dirsize if dirsize[_] > mindel]))
+mindel = 30000000 - (70000000-used)
+print(min([dirsize[_] for _ in dirsize if dirsize[_] > mindel]))
